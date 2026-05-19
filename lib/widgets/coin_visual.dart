@@ -1,9 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../core/theme.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/coin_state.dart';
+import '../providers/inventory_provider.dart';
 
-class CoinVisual extends StatefulWidget {
+class CoinVisual extends ConsumerStatefulWidget {
   final bool isSpinning;
   final CoinSide? result;
 
@@ -14,10 +15,10 @@ class CoinVisual extends StatefulWidget {
   });
 
   @override
-  State<CoinVisual> createState() => _CoinVisualState();
+  ConsumerState<CoinVisual> createState() => _CoinVisualState();
 }
 
-class _CoinVisualState extends State<CoinVisual> with SingleTickerProviderStateMixin {
+class _CoinVisualState extends ConsumerState<CoinVisual> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -50,20 +51,23 @@ class _CoinVisualState extends State<CoinVisual> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    // Osserva dinamicamente la skin attiva dal provider di Riverpod
+    final skin = ref.watch(currentSkinModelProvider);
+
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
         double angle = _animation.value;
         
-        // CORREZIONE LOGICA:
-        // Se la moneta sta girando, alterniamo le facce matematicamente.
-        // Se è ferma, la sorgente di verità assoluta diventa il widget.result.
+        // FISICA E ANCORAGGIO IDENTICI: Manteniamo intatta la tua logica di stabilizzazione
         final bool showHeads;
         if (widget.isSpinning || _controller.isAnimating) {
           showHeads = (((angle / pi).round() % 2) == 0);
         } else {
           showHeads = (widget.result == CoinSide.heads || widget.result == null);
         }
+
+        final currentGradient = showHeads ? skin.frontColors : skin.backColors;
 
         return Transform(
           transform: Matrix4.identity()
@@ -78,13 +82,14 @@ class _CoinVisualState extends State<CoinVisual> with SingleTickerProviderStateM
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: showHeads ? AppColors.goldCoinGradient : AppColors.silverCoinGradient,
+                colors: currentGradient,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: (showHeads ? AppColors.primary : Colors.white).withOpacity(0.3),
-                  blurRadius: 20,
-                  spreadRadius: 2,
+                  color: (showHeads ? skin.borderColor : Colors.white)
+                      .withValues(alpha: skin.hasGlowEffect ? 0.65 : 0.3),
+                  blurRadius: skin.hasGlowEffect ? 35 : 20,
+                  spreadRadius: skin.hasGlowEffect ? 5 : 2,
                 ),
                 const BoxShadow(
                   color: Colors.black54,
@@ -93,7 +98,7 @@ class _CoinVisualState extends State<CoinVisual> with SingleTickerProviderStateM
                 )
               ],
               border: Border.all(
-                color: showHeads ? const Color(0xFFB8860B) : const Color(0xFF757575),
+                color: showHeads ? skin.borderColor : const Color(0xFF757575),
                 width: 5,
               ),
             ),
@@ -104,7 +109,8 @@ class _CoinVisualState extends State<CoinVisual> with SingleTickerProviderStateM
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: (showHeads ? const Color(0xFFFFD700) : const Color(0xFFE0E0E0)).withOpacity(0.5),
+                    color: (showHeads ? skin.borderColor : const Color(0xFFE0E0E0))
+                        .withValues(alpha: 0.4),
                     width: 2,
                   ),
                 ),
@@ -114,9 +120,15 @@ class _CoinVisualState extends State<CoinVisual> with SingleTickerProviderStateM
                     style: TextStyle(
                       fontSize: 64,
                       fontWeight: FontWeight.bold,
-                      color: showHeads ? const Color(0xFF8B5A00) : const Color(0xFF424242),
+                      color: showHeads 
+                          ? (skin.borderHex == 0xFF414345 ? Colors.white : const Color(0xFF1C1C1E))
+                          : const Color(0xFF2C2C2E),
                       shadows: const [
-                        Shadow(color: Colors.white24, offset: Offset(1, 1), blurRadius: 1)
+                        Shadow(
+                          color: Colors.white24, 
+                          offset: Offset(1, 1), 
+                          blurRadius: 1,
+                        )
                       ],
                     ),
                   ),
