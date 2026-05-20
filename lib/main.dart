@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// Manteniamo l'import assoluto nativo corretto del tuo progetto
 import 'package:antipanic_app/repositories/shared_prefs_repository.dart';
+import 'screens/main_navigation_hub.dart';
 
 void main() async {
-  // Core Flutter engine initialization required for native platform channels
+  // Inizializzazione del binding nativo di Flutter richiesta prima dell'esecuzione di codice asincrono
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Asynchronously resolve hardware persistence on the main thread before frame zero
+  // Pre-caricamento sincrono/asincrono dell'istanza hardware sul thread principale prima del frame zero
   final sharedPreferencesInstance = await SharedPreferences.getInstance();
 
   runApp(
     ProviderScope(
       overrides: [
-        // Inject the fully ready hardware instance directly into the Riverpod dependency graph
-        sharedPreferencesProvider.overrideWithValue(sharedPreferencesInstance),
+        // Iniettiamo l'istanza pronta direttamente dentro il provider del nostro repository personalizzato
+        sharedPrefsRepositoryProvider.overrideWithValue(SharedPrefsRepository(sharedPreferencesInstance)),
       ],
       child: const TossACoinApp(),
     ),
@@ -32,22 +34,12 @@ class TossACoinApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFFFD700), // Procedural gold primary token
+          seedColor: const Color(0xFFFFD700), // Token primario basato sull'oro procedurale
           brightness: Brightness.dark,
         ),
       ),
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'Toss A Coin — Modulo 1 Inizializzato',
-            style: TextStyle(
-              fontSize: 18, 
-              fontWeight: FontWeight.bold,
-              color: Color(0xFFFFD700),
-            ),
-          ),
-        ),
-      ),
+      // Carica lo Shell di navigazione centrale dell'app
+      home: const MainNavigationHub(),
     );
   }
 }
