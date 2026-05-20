@@ -67,7 +67,13 @@ class _CoinVisualState extends ConsumerState<CoinVisual> with SingleTickerProvid
           showHeads = (widget.result == CoinSide.heads || widget.result == null);
         }
 
+        // Estrazione dinamica del gradiente in base alla faccia visibile
         final currentGradient = showHeads ? skin.frontColors : skin.backColors;
+        
+        // Risoluzione dinamica del colore del bordo (evita il grigio fisso sul retro)
+        final currentBorderColor = showHeads 
+            ? skin.borderColor 
+            : skin.backColors.last.withValues(alpha: 0.8);
 
         return Transform(
           transform: Matrix4.identity()
@@ -98,7 +104,7 @@ class _CoinVisualState extends ConsumerState<CoinVisual> with SingleTickerProvid
                 )
               ],
               border: Border.all(
-                color: showHeads ? skin.borderColor : const Color(0xFF757575),
+                color: currentBorderColor,
                 width: 5,
               ),
             ),
@@ -109,7 +115,7 @@ class _CoinVisualState extends ConsumerState<CoinVisual> with SingleTickerProvid
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: (showHeads ? skin.borderColor : const Color(0xFFE0E0E0))
+                    color: (showHeads ? skin.borderColor : skin.backColors.first)
                         .withValues(alpha: 0.4),
                     width: 2,
                   ),
@@ -120,9 +126,10 @@ class _CoinVisualState extends ConsumerState<CoinVisual> with SingleTickerProvid
                     style: TextStyle(
                       fontSize: 64,
                       fontWeight: FontWeight.bold,
+                      // Il testo si adatta al colore di contrasto definito o calcolato della skin
                       color: showHeads 
                           ? (skin.borderHex == 0xFF414345 ? Colors.white : const Color(0xFF1C1C1E))
-                          : const Color(0xFF2C2C2E),
+                          : skin.backColors.last.withValues(alpha: 0.9),
                       shadows: const [
                         Shadow(
                           color: Colors.white24, 
