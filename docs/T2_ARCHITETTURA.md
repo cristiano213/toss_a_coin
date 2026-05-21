@@ -21,11 +21,14 @@ lib/
 │    ├── coin_provider.dart         # Logica di calcolo del volo e delle strisce statistiche
 │    ├── gacha_provider.dart        # Calcolatore probabilistico del pity e delle estrazioni
 │    └── inventory_provider.dart    # Gestore delle skin sbloccate ed equipaggiate
-├── screens/
-│    ├── main_navigation_hub.dart   # Scaffold con NavigationBar Material 3 per la gestione dei tab
-│    ├── coin_flip_screen.dart      # Interfaccia di scommessa e animazione della moneta
-│    ├── gacha_screen.dart          # Interfaccia di pull grafica dei tier a stelle
-│    └── dashboard_screen.dart      # Lista inventario ed equipaggiamento skin attive (scheletro)
+├── ├── screens/
+│    ├── main_navigation_hub.dart   # Scaffold con NavigationBar principale
+│    ├── coin_flip_screen.dart      # Schermata di lancio e scommessa
+│    ├── gacha_screen.dart          # Schermata simulatore ed estrazioni
+│    └── collection/                # Sotto-sistema Modulo 3 (Nuovo)
+│         ├── collection_hub_screen.dart # Hub con TabBar (Archivio vs Inventario)
+│         ├── archive_page.dart          # Griglia totale di tutte le skin (Wiki)
+│         └── inventory_page.dart        # Elenco skin possedute ed equipaggiamento
 ├── widgets/
 │    ├── coin_visual.dart           # Renderizzatore 3D con Matrix4 e AnimatedBuilder
 │    └── gacha_result_dialog.dart   # Overlay modale per la visualizzazione animata dei drop
@@ -35,18 +38,20 @@ lib/
 ## 2. Layer di Persistenza Locale (SharedPrefsRepository)
 Per evitare letture asincrone bloccanti all'interno dei metodi `build` dei widget di Flutter, l'istanza hardware di `SharedPreferences` viene interamente risolta nel thread principale prima dell'esecuzione dell'albero dell'applicazione (Issue ID_001 Risolta).
 
-### Schema di Serializzazione JSON dell'Inventario
-L'inventario delle skin viene salvato sul disco locale all'interno di una stringa JSON sotto la chiave `toss_coin_inventory`.
-```json
-{
-  "equipped_skin_id": "gold_legacy_01",
-  "unlocked_skin_ids": [
-    "gold_base",
-    "silver_base",
-    "neon_pulse_04",
-    "gold_legacy_01"
-  ]
-}
+### Schema di Persistenza dell'Inventario (SharedPreferences)
+L'inventario delle skin viene segmentato su disco locale utilizzando chiavi separate prelevate dal registro immutabile `StorageKeys` in `constants.dart`:
+
+1. **Skin Attiva (`StorageKeys.activeSkinId`):** Salva una stringa semplice contenente l'ID univoco della skin equipaggiata.
+   - *Esempio di valore:* `"skin_classic_gold"`
+
+2. **Sblocchi Completi (`StorageKeys.unlockedSkins`):** Salva una stringa JSON che rappresenta l'array serializzato di tutti i codici univoci posseduti dall'utente.
+   - *Esempio di struttura sul disco:*
+   ```json
+   [
+     "skin_classic_gold",
+     "skin_classic_silver",
+     "skin_neon_pulse"
+   ]
 Questa sezione mappa le dipendenze reattive ed economiche tra i componenti logici per evitare accoppiamenti ciclici distruttivi:
 
 coinProvider -> inventoryProvider
