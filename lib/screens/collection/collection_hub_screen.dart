@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import './collection/archive_page.dart';
-import './collection/inventory_page.dart';
+import 'archive_page.dart';
+import 'inventory_page.dart';
 
 /// Hub screen managing the collection sub-views using a native Material 3 TabBar.
-/// Refactored from placeholder to serve as the unified collection ecosystem entrypoint.
-class InventoryScreen extends StatelessWidget {
-  const InventoryScreen({super.key});
+class CollectionHubScreen extends StatelessWidget {
+  const CollectionHubScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +13,6 @@ class InventoryScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Skin Collection'),
-          centerTitle: true,
           bottom: const TabBar(
             tabs: [
               Tab(icon: Icon(Icons.auto_awesome_motion), text: 'Archivio Wiki'),

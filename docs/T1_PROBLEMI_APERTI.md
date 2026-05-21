@@ -1,7 +1,7 @@
 # Toss A Coin — Problemi Aperti & Issue Tracking
 
 **Tier 1 — Documento dinamico di stato.** Aggiornare al variare delle anomalie.
-**Versione:** 1.2 (Modulo 2 - Chiusura Astrazione Skin)
+**Versione:** 1.3 (Modulo 3 - Sotto-sistema Collezione)
 **Aggiornato:** Maggio 2026
 
 > **Scope di questo file**: Tracciamento rigoroso dei bug architetturali, anomalie visive e limitazioni tecniche del codice. Ogni anomalia ha un ID univoco e viene spostata nella sezione "Risolti" solo dopo la verifica statica (`flutter analyze`).
@@ -10,7 +10,11 @@
 
 ## 1. Issue Attive e Pendenti
 
-*Nessuna issue attiva rilevata. Il sistema è stabile e allineato alle specifiche del Modulo 2.*
+### ID_003 | Contrasto Insufficiente Faccia Croce nel Tema Void
+* **Sintomo:** Quando viene applicato il tema estetico procedurale *Void*, la texture o il testo della faccia di croce risulta difficilmente visibile a causa della sovrapposizione di tonalità scure (nero su nero).
+* **Impatto:** Basso (Anomalia puramente visiva localizzata su una singola variante estetica, non pregiudica la stabilità dei calcoli).
+* **Strategia di Risoluzione:** Modificare i parametri cromatici esadecimali all'interno del registro immutabile `GachaPool` in `constants.dart` per il modello specifico, incrementando la luminosità del gradiente o del colore flat assegnato alla faccia secondaria della moneta.
+* **Stato:** APERTO (Pianificato per la fase visiva del Modulo 3).
 
 ---
 
