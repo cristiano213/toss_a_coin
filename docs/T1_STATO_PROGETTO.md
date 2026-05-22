@@ -2,7 +2,7 @@
 
 **Stato attuale:** Modulo 3 - Fase Strutturale Completata (Linguaggio Riverpod 2.5 Notifier consolidato, integrazione della navigazione e scomposizione a doppia pagina Galleria/Loadout pienamente funzionante e stabile).
 **Versione Logica:** 1.3
-**Prossimo Obiettivo:** Inizializzazione Modulo 3 - Fase Visiva (Risoluzione del contrasto della faccia di croce nel Tema Void, implementazione delle animazioni fluide e gestione dinamica avanzata dei gradienti).
+**Prossimo Obiettivo:** Modulo 3 - Fase Visiva e Analitica (Risoluzione del contrasto del Tema Void, restyling avanzato dei materiali procedurali delle monete, implementazione animazioni/temi globali, aggiunta della UI per lo storico/statistiche e integrazione del sistema di logging/audit per la verifica matematica dell'RNG e del Pity System).
 
 ## 1. Tracciamento Controllo Versione (Git Status)
 - **Repository Remoto:** `https://github.com/cristiano213/toss_a_coin.git`
@@ -20,4 +20,4 @@
 - Migrato l'intero file `inventory_provider.dart` alla sintassi `Notifier`.
 - Aggiornato ed emendato il file `inventory_screen.dart` come Hub centrale basato su `DefaultTabController` e `TabBar` Material 3, preservando l'integrità dell'`IndexedStack` nel `MainNavigationHub`.
 - Sviluppate in isolamento atomico le viste `archive_page.dart` e `inventory_page.dart`.
-- Risolto l'errore di compilazione dell'SDK Flutter relativo al costruttore costante di `ColorFilter`, sostituendolo con matrici identità esplicite in linea.
+- Risolto l'errore di compilazione dell'SDK Flutter relativo al costruttore costante di `ColorFilter`, sostituendolo con matrici identità esplicite in linea.   
